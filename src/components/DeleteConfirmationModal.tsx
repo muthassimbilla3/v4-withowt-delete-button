@@ -21,14 +21,10 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   type = 'danger'
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [confirmationText, setConfirmationText] = useState('');
 
   if (!isOpen) return null;
 
   const handleConfirm = async () => {
-    if (confirmationText.toLowerCase() !== 'delete all') {
-      return;
-    }
 
     setIsDeleting(true);
     try {
@@ -38,18 +34,16 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
       console.error('Error during deletion:', error);
     } finally {
       setIsDeleting(false);
-      setConfirmationText('');
     }
   };
 
   const handleClose = () => {
     if (!isDeleting) {
-      setConfirmationText('');
       onClose();
     }
   };
 
-  const isConfirmDisabled = confirmationText.toLowerCase() !== 'delete all' || isDeleting;
+  const isConfirmDisabled = isDeleting;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -117,20 +111,6 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
               </ul>
             </div>
 
-            {/* Confirmation Input */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Type <span className="font-mono bg-gray-100 px-1 rounded">DELETE ALL</span> to confirm:
-              </label>
-              <input
-                type="text"
-                value={confirmationText}
-                onChange={(e) => setConfirmationText(e.target.value)}
-                placeholder="Type DELETE ALL here"
-                disabled={isDeleting}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
-            </div>
 
             {/* Action Buttons */}
             <div className="flex justify-end space-x-3">
