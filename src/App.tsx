@@ -34,7 +34,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route path="/" element={
         <ProtectedRoute>
-          {user?.role === 'admin' || user?.role === 'manager' ? <Navigate to="/status" replace /> : <Home />}
+          {user?.role === 'admin' || user?.role === 'manager' ? <Navigate to="/admin" replace /> : <Home />}
         </ProtectedRoute>
       } />
       <Route path="/admin" element={
