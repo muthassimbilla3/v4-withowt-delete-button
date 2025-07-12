@@ -5,6 +5,7 @@ import { Upload, Trash2, Users, Edit2, RotateCcw, Database } from 'lucide-react'
 import toast from 'react-hot-toast';
 import Modal from '../components/Modal';
 import UploadProgressModal from '../components/UploadProgressModal';
+import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import * as XLSX from 'xlsx';
 
 export const Admin: React.FC = () => {
@@ -37,6 +38,9 @@ export const Admin: React.FC = () => {
     totalProxies: 0,
     processedProxies: 0
   });
+
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (user && (user.role === 'admin' || user.role === 'manager')) {
@@ -348,8 +352,6 @@ export const Admin: React.FC = () => {
   };
 
   const handleClearAllProxies = async () => {
-    if (!confirm('Are you sure you want to delete ALL proxies? This action cannot be undone.')) return;
-
     try {
       const { error } = await supabase
         .from('proxies')
@@ -590,7 +592,7 @@ export const Admin: React.FC = () => {
                     </div>
                     <div className="mt-4">
                       <button
-                        onClick={handleClearAllProxies}
+                        onClick={() => setShowDeleteModal(true)}
                         className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors flex items-center space-x-2"
                       >
                         <Trash2 size={16} />
@@ -758,6 +760,16 @@ export const Admin: React.FC = () => {
           message={uploadProgress.message}
           totalProxies={uploadProgress.totalProxies}
           processedProxies={uploadProgress.processedProxies}
+        />
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleClearAllProxies}
+          title="Delete All Proxies"
+          message="This will permanently delete all proxies from the database. This action will immediately affect all users and cannot be undone."
+          confirmText="Delete All Proxies"
         />
       </div>
     </div>
